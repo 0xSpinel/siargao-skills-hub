@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { MapPin, Phone, Hammer, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { MUNICIPALITIES, TRADES, formatPay, timeAgo } from "@/lib/jobs";
+import { JobDetail } from "@/components/JobDetail";
 
 const jobsQuery = queryOptions({
   queryKey: ["jobs"],
@@ -33,6 +34,7 @@ function Index() {
   const [trade, setTrade] = useState("All");
   const [town, setTown] = useState("All");
   const [q, setQ] = useState("");
+  const [openId, setOpenId] = useState<string | null>(null);
 
   const filtered = useMemo(() => jobs.filter((j) =>
     (trade === "All" || j.trade === trade) &&
@@ -74,7 +76,9 @@ function Index() {
         <p className="mt-8 text-sm text-muted-foreground">{filtered.length} open job{filtered.length !== 1 && "s"}</p>
         <div className="mt-3 grid gap-4 md:grid-cols-2">
           {filtered.map((j) => (
-            <article key={j.id} className="flex flex-col rounded-2xl border bg-card p-5">
+            <article key={j.id} role="button" tabIndex={0} onClick={() => setOpenId(j.id)}
+              onKeyDown={(e) => e.key === "Enter" && setOpenId(j.id)}
+              className="flex cursor-pointer flex-col rounded-2xl border bg-card p-5 transition hover:border-primary hover:shadow-md">
               <div className="flex items-start justify-between gap-3">
                 <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-3 py-1 text-xs font-bold text-secondary-foreground">
                   <Hammer className="h-3 w-3" /> {j.trade}
@@ -101,6 +105,7 @@ function Index() {
           <p className="mt-10 text-center text-muted-foreground">No jobs match yet. <Link to="/post" className="text-primary underline">Post one</Link>.</p>
         )}
       </main>
+      <JobDetail job={jobs.find((j) => j.id === openId) ?? null} onClose={() => setOpenId(null)} />
     </div>
   );
 }
