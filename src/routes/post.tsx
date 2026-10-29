@@ -2,13 +2,13 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState, type FormEvent, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { jobSchema, type JobInput, MUNICIPALITIES, PAY_UNITS, TRADES } from "@/lib/jobs";
+import { jobSchema, type JobInput, MUNICIPALITIES, TRADES } from "@/lib/jobs";
 
 export const Route = createFileRoute("/post")({
   head: () => ({
     meta: [
       { title: "Post a job — Siargao Hanap-Trabaho" },
-      { name: "description", content: "Post a work request for local Siargao tradespeople with barangay, pay and details." },
+      { name: "description", content: "Post a quick task for local Siargao tradespeople with barangay, pay and details." },
       { property: "og:title", content: "Post a job — Siargao Hanap-Trabaho" },
       { property: "og:description", content: "Reach local carpenters, painters, mechanics and electricians in Siargao." },
     ],
@@ -45,7 +45,7 @@ function PostJob() {
       return;
     }
     setErrors({}); setBusy(true); setFailure("");
-    const { error } = await supabase.from("job_posts").insert(parsed.data);
+    const { error } = await supabase.from("job_posts").insert({ ...parsed.data, pay_unit: "per job" });
     setBusy(false);
     if (error) { setFailure("Couldn't post the job. Please try again."); return; }
     await qc.invalidateQueries({ queryKey: ["jobs"] });
@@ -56,8 +56,8 @@ function PostJob() {
     <div className="min-h-screen px-6 py-10">
       <div className="mx-auto max-w-2xl">
         <Link to="/" className="text-sm text-primary">← Back to jobs</Link>
-        <h1 className="mt-4 font-display text-4xl font-extrabold">Post a work request</h1>
-        <p className="mt-2 text-muted-foreground">Tell local talent what you need, where, and how much you'll pay.</p>
+        <h1 className="mt-4 font-display text-4xl font-extrabold">Post a quick task</h1>
+        <p className="mt-2 text-muted-foreground">One problem, one fix — something that takes an hour or a day. Say where it is and what you'll pay.</p>
 
         <form onSubmit={onSubmit} className="mt-8 space-y-5 rounded-2xl border bg-card p-6">
           <Field label="Job title" error={errors.title}><input name="title" className={field} placeholder="e.g. Repair bamboo fence" /></Field>
@@ -70,14 +70,9 @@ function PostJob() {
             </Field>
           </div>
           <Field label="Barangay" error={errors.barangay}><input name="barangay" className={field} placeholder="e.g. Catangnan" /></Field>
-          <div className="grid gap-5 md:grid-cols-2">
-            <Field label="Pay (₱)" error={errors.pay_amount}><input name="pay_amount" type="number" min="0" className={field} placeholder="800" /></Field>
-            <Field label="Rate" error={errors.pay_unit}>
-              <select name="pay_unit" className={field}>{PAY_UNITS.map((t) => <option key={t}>{t}</option>)}</select>
-            </Field>
-          </div>
+          <Field label="What you'll pay for the whole task (₱)" error={errors.pay_amount}><input name="pay_amount" type="number" min="0" className={field} placeholder="500" /></Field>
           <Field label="Job description" error={errors.description}>
-            <textarea name="description" rows={5} className={field} placeholder="What needs doing, how long, materials provided?" />
+            <textarea name="description" rows={5} className={field} placeholder="What's broken or needs doing? Materials provided?" />
           </Field>
           <div className="grid gap-5 md:grid-cols-2">
             <Field label="Your name" error={errors.poster_name}><input name="poster_name" className={field} /></Field>
