@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+# AGENTS
+- Job posts live in public.job_posts; anyone can read and post (no login) — keeps posting frictionless for the community.
