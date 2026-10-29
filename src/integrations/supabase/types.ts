@@ -14,7 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      job_posts: {
+        Row: {
+          barangay: string
+          contact: string
+          created_at: string
+          description: string
+          id: string
+          municipality: string
+          pay_amount: number
+          pay_unit: string
+          poster_name: string
+          title: string
+          trade: string
+        }
+        Insert: {
+          barangay: string
+          contact: string
+          created_at?: string
+          description: string
+          id?: string
+          municipality: string
+          pay_amount: number
+          pay_unit: string
+          poster_name: string
+          title: string
+          trade: string
+        }
+        Update: {
+          barangay?: string
+          contact?: string
+          created_at?: string
+          description?: string
+          id?: string
+          municipality?: string
+          pay_amount?: number
+          pay_unit?: string
+          poster_name?: string
+          title?: string
+          trade?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
