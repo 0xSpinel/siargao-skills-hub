@@ -21,9 +21,12 @@ export type Database = {
           created_at: string
           description: string
           id: string
+          latitude: number | null
+          longitude: number | null
           municipality: string
           pay_amount: number
           pay_unit: string
+          photo_url: string | null
           poster_name: string
           title: string
           trade: string
@@ -34,9 +37,12 @@ export type Database = {
           created_at?: string
           description: string
           id?: string
+          latitude?: number | null
+          longitude?: number | null
           municipality: string
           pay_amount: number
           pay_unit?: string
+          photo_url?: string | null
           poster_name: string
           title: string
           trade: string
@@ -47,9 +53,12 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
+          latitude?: number | null
+          longitude?: number | null
           municipality?: string
           pay_amount?: number
           pay_unit?: string
+          photo_url?: string | null
           poster_name?: string
           title?: string
           trade?: string
