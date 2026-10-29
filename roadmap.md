@@ -1,0 +1,3 @@
+- [ ] Add account pages with display-name and email validation.
+- [ ] Require signed-in posting with protected database writes and profile creation.
+- [ ] Verify sign-up errors, login, posting access, and logout.
