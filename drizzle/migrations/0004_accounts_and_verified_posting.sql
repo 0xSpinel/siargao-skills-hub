@@ -1,0 +1,17 @@
+CREATE FUNCTION public.readable_display_name(value text) RETURNS boolean LANGUAGE sql IMMUTABLE SET search_path = '' AS $$ SELECT value IS NOT NULL AND char_length(trim(value)) BETWEEN 2 AND 80 AND trim(value) ~ '^[[:alpha:] .’''-]+$' AND char_length(regexp_replace(value, '[^[:alpha:]]', '', 'g')) >= 2 AND lower(regexp_replace(value, '[^[:alpha:]]', '', 'g')) !~ '(.)\1{3}' AND lower(regexp_replace(value, '[^[:alpha:]]', '', 'g')) !~ '^(asdf|qwer|zxcv|qwerty|test|random|fake|abcdef|hjkl|foobar|xyz)+$' AND NOT (lower(regexp_replace(value, '[^[:alpha:]]', '', 'g')) ~ '^[a-z]{5,}$' AND lower(value) !~ '[aeiouy]'); $$;
+CREATE TABLE public.profiles (id uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE, display_name text, created_at timestamptz NOT NULL DEFAULT now(), CONSTRAINT readable_name CHECK (display_name IS NULL OR public.readable_display_name(display_name)));
+GRANT SELECT, INSERT, UPDATE ON public.profiles TO authenticated;
+GRANT ALL ON public.profiles TO service_role;
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Read own profile" ON public.profiles FOR SELECT TO authenticated USING (id = auth.uid());
+CREATE POLICY "Create own profile" ON public.profiles FOR INSERT TO authenticated WITH CHECK (id = auth.uid());
+CREATE POLICY "Update own profile" ON public.profiles FOR UPDATE TO authenticated USING (id = auth.uid()) WITH CHECK (id = auth.uid());
+CREATE FUNCTION public.create_account_profile() RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path = '' AS $$ DECLARE chosen_name text; BEGIN chosen_name := coalesce(NEW.raw_user_meta_data->>'display_name', NEW.raw_user_meta_data->>'full_name', NEW.raw_user_meta_data->>'name'); IF NEW.raw_user_meta_data ? 'display_name' AND NOT public.readable_display_name(chosen_name) THEN RAISE EXCEPTION 'Please enter a readable display name, not random letters.'; END IF; INSERT INTO public.profiles(id, display_name) VALUES (NEW.id, CASE WHEN public.readable_display_name(chosen_name) THEN trim(chosen_name) ELSE NULL END); RETURN NEW; END; $$;
+REVOKE EXECUTE ON FUNCTION public.create_account_profile() FROM PUBLIC, anon, authenticated;
+CREATE TRIGGER create_account_profile AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION public.create_account_profile();
+ALTER TABLE public.job_posts ADD COLUMN user_id uuid;
+DROP POLICY "Anyone can post jobs" ON public.job_posts;
+REVOKE INSERT ON public.job_posts FROM anon;
+CREATE POLICY "Signed in users can post their tasks" ON public.job_posts FOR INSERT TO authenticated WITH CHECK (user_id = auth.uid() AND EXISTS (SELECT 1 FROM public.profiles p WHERE p.id = auth.uid() AND p.display_name IS NOT NULL AND p.display_name = poster_name));
+DROP POLICY "Anyone can upload job photos" ON storage.objects;
+CREATE POLICY "Signed in users can upload job photos" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'job-photos' AND auth.uid() IS NOT NULL);

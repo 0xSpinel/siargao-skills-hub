@@ -5,6 +5,8 @@ import { MapPin, Phone, Hammer, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { MUNICIPALITIES, TRADES, formatPay, timeAgo } from "@/lib/jobs";
 import { JobDetail } from "@/components/JobDetail";
+import { AccountActions } from "@/components/AccountActions";
+import { Button } from "@/components/ui/button";
 
 const jobsQuery = queryOptions({
   queryKey: ["jobs"],
@@ -23,6 +25,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Find or post work for carpenters, painters, mechanics and electricians across Siargao's barangays." },
       { property: "og:title", content: "Siargao Hanap-Trabaho" },
       { property: "og:description", content: "A community job board connecting Siargao hirers with local tradespeople." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(jobsQuery),
@@ -46,11 +50,11 @@ function Index() {
     <div className="min-h-screen">
       <header className="px-6 pb-16 pt-10 text-primary-foreground" style={{ background: "var(--gradient-sea)" }}>
         <div className="mx-auto max-w-5xl">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-4">
             <span className="font-display text-xl font-extrabold">Hanap-Trabaho · Siargao</span>
-            <Link to="/post" className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-bold text-accent-foreground hover:opacity-90">
+            <div className="flex flex-wrap items-center gap-3"><AccountActions /><Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90"><Link to="/post">
               <Plus className="h-4 w-4" /> Post a job
-            </Link>
+            </Link></Button></div>
           </div>
           <h1 className="mt-12 max-w-2xl font-display text-4xl font-extrabold leading-tight md:text-6xl">
             Island work, done by island hands.

@@ -1,0 +1,4 @@
+- [x] Add account pages with display-name and email validation.
+- [x] Require signed-in posting with protected database writes and profile creation.
+- [x] Verify sign-up errors and signed-out posting restriction on desktop and mobile.
+- [ ] Verify confirmed-email login, signed-in posting, and logout — blocked until a real user signs up and confirms their email; no auth users exist to mint a test session.

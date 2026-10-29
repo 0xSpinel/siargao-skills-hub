@@ -30,6 +30,7 @@ export type Database = {
           poster_name: string
           title: string
           trade: string
+          user_id: string | null
         }
         Insert: {
           barangay: string
@@ -46,6 +47,7 @@ export type Database = {
           poster_name: string
           title: string
           trade: string
+          user_id?: string | null
         }
         Update: {
           barangay?: string
@@ -62,6 +64,25 @@ export type Database = {
           poster_name?: string
           title?: string
           trade?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
         }
         Relationships: []
       }
@@ -70,7 +91,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      readable_display_name: { Args: { value: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
