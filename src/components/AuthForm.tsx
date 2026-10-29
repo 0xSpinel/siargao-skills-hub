@@ -35,7 +35,13 @@ export function AuthForm({ signup = false }: { signup?: boolean }) {
         const result = await supabase.auth.signUp({ email: data.email, password: data.password, options: {
           data: { display_name: data.display_name }, emailRedirectTo: `${window.location.origin}/auth`,
         } });
-        if (result.error) throw result.error;
+        if (result.error) {
+          if (result.error.message.includes("email address is not allowed")) {
+            setErrors({ email: "Use a real email address you can receive mail at, not a placeholder or mistyped domain." });
+            return;
+          }
+          throw result.error;
+        }
         if (!result.data.session) setSent(true);
       } else {
         const { error } = await supabase.auth.signInWithPassword(parsed.data);
