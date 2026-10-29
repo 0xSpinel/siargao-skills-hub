@@ -54,7 +54,7 @@ function Index() {
             Island work, done by island hands.
           </h1>
           <p className="mt-4 max-w-xl text-lg opacity-90">
-            Hire local carpenters, painters, mechanics and electricians — right in your barangay.
+            Got a quick fix — an hour or a day's work? Post it, name your price, and a local carpenter, painter, mechanic or electrician nearby can take it.
           </p>
         </div>
       </header>
@@ -88,7 +88,8 @@ function Index() {
               <p className="mt-3 flex-1 whitespace-pre-line text-sm">{j.description}</p>
               <div className="mt-4 flex items-end justify-between border-t pt-4">
                 <div>
-                  <div className="font-display text-2xl font-extrabold text-primary">{formatPay(j.pay_amount, j.pay_unit)}</div>
+                  <div className="text-xs text-muted-foreground">Pay for this task</div>
+                  <div className="font-display text-2xl font-extrabold text-primary">{formatPay(j.pay_amount)}</div>
                   <div className="text-xs text-muted-foreground">Posted by {j.poster_name}</div>
                 </div>
                 <span className="flex items-center gap-1 text-sm font-medium"><Phone className="h-4 w-4" />{j.contact}</span>

@@ -36,7 +36,7 @@ export type Database = {
           id?: string
           municipality: string
           pay_amount: number
-          pay_unit: string
+          pay_unit?: string
           poster_name: string
           title: string
           trade: string
