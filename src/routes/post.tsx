@@ -45,7 +45,7 @@ function PostJob() {
       return;
     }
     setErrors({}); setBusy(true); setFailure("");
-    const { error } = await supabase.from("job_posts").insert(parsed.data);
+    const { error } = await supabase.from("job_posts").insert({ ...parsed.data, pay_unit: "per job" });
     setBusy(false);
     if (error) { setFailure("Couldn't post the job. Please try again."); return; }
     await qc.invalidateQueries({ queryKey: ["jobs"] });
