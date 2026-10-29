@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState, type FormEvent, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { jobSchema, MUNICIPALITIES, PAY_UNITS, TRADES } from "@/lib/jobs";
+import { jobSchema, type JobInput, MUNICIPALITIES, PAY_UNITS, TRADES } from "@/lib/jobs";
 
 export const Route = createFileRoute("/post")({
   head: () => ({
@@ -18,7 +18,7 @@ export const Route = createFileRoute("/post")({
 
 const field = "w-full rounded-lg border bg-background px-3 py-2 text-sm";
 
-function Field({ label, error, children }: { label: string; error?: string; children: ReactNode }) {
+function Field({ label, error, children }: { label: string; error?: string | undefined; children: ReactNode }) {
   return (
     <label className="block">
       <span className="mb-1 block text-sm font-bold">{label}</span>
@@ -31,7 +31,7 @@ function Field({ label, error, children }: { label: string; error?: string; chil
 function PostJob() {
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<Partial<Record<keyof JobInput, string>>>({});
   const [busy, setBusy] = useState(false);
   const [failure, setFailure] = useState("");
 
@@ -39,8 +39,8 @@ function PostJob() {
     e.preventDefault();
     const parsed = jobSchema.safeParse(Object.fromEntries(new FormData(e.currentTarget)));
     if (!parsed.success) {
-      const errs: Record<string, string> = {};
-      parsed.error.issues.forEach((i) => { errs[String(i.path[0])] ??= i.message; });
+      const errs: Partial<Record<keyof JobInput, string>> = {};
+      parsed.error.issues.forEach((i) => { errs[i.path[0] as keyof JobInput] ??= i.message; });
       setErrors(errs);
       return;
     }
