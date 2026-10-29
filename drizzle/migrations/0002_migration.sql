@@ -1,0 +1,1 @@
+DELETE FROM public.job_posts WHERE poster_name = 'Tester';
