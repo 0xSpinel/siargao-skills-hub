@@ -1,4 +1,5 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { ClientOnly, createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { JobMap } from "@/components/JobMap";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState, type FormEvent, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -34,6 +35,8 @@ function PostJob() {
   const [errors, setErrors] = useState<Partial<Record<keyof JobInput, string>>>({});
   const [busy, setBusy] = useState(false);
   const [failure, setFailure] = useState("");
+  const [pin, setPin] = useState<{ lat: number; lng: number } | null>(null);
+  const [photo, setPhoto] = useState<File | null>(null);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -45,7 +48,17 @@ function PostJob() {
       return;
     }
     setErrors({}); setBusy(true); setFailure("");
-    const { error } = await supabase.from("job_posts").insert({ ...parsed.data, pay_unit: "per job" });
+    let photo_url: string | null = null;
+    if (photo) {
+      const path = `${crypto.randomUUID()}-${photo.name.replace(/[^\w.]/g, "_")}`;
+      const up = await supabase.storage.from("job-photos").upload(path, photo);
+      if (up.error) { setBusy(false); setFailure("Couldn't upload the photo (max 5 MB)."); return; }
+      photo_url = path;
+    }
+    const { error } = await supabase.from("job_posts").insert({
+      ...parsed.data, pay_unit: "per job", photo_url,
+      latitude: pin?.lat ?? null, longitude: pin?.lng ?? null,
+    });
     setBusy(false);
     if (error) { setFailure("Couldn't post the job. Please try again."); return; }
     await qc.invalidateQueries({ queryKey: ["jobs"] });
@@ -73,6 +86,17 @@ function PostJob() {
           <Field label="What you'll pay for the whole task (₱)" error={errors.pay_amount}><input name="pay_amount" type="number" min="0" className={field} placeholder="500" /></Field>
           <Field label="Job description" error={errors.description}>
             <textarea name="description" rows={5} className={field} placeholder="What's broken or needs doing? Materials provided?" />
+          </Field>
+          <div>
+            <span className="mb-1 block text-sm font-bold">Exact spot (optional)</span>
+            <p className="mb-2 text-xs text-muted-foreground">Tap the map to drop a pin where the work is.</p>
+            <ClientOnly fallback={<div className="h-64 rounded-lg bg-muted" />}>
+              <JobMap position={pin} onPick={setPin} className="h-64 w-full overflow-hidden rounded-lg border" />
+            </ClientOnly>
+            {pin && <button type="button" onClick={() => setPin(null)} className="mt-1 text-xs text-primary underline">Remove pin</button>}
+          </div>
+          <Field label="Photo of the problem (optional)">
+            <input type="file" accept="image/*" onChange={(e) => setPhoto(e.target.files?.[0] ?? null)} className={field} />
           </Field>
           <div className="grid gap-5 md:grid-cols-2">
             <Field label="Your name" error={errors.poster_name}><input name="poster_name" className={field} /></Field>
