@@ -9,7 +9,7 @@ import { useAccount } from "@/components/AccountProvider";
 import { Button } from "@/components/ui/button";
 import { AccountActions } from "@/components/AccountActions";
 
-export const Route = createFileRoute("/_authenticated/post")({
+export const Route = createFileRoute("/post")({
   head: () => ({
     meta: [
       { title: "Post a job — Siargao Hanap-Trabaho" },
