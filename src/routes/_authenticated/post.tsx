@@ -79,13 +79,17 @@ function PostJob() {
   }
 
   return (
-    <div className="min-h-screen px-6 py-10">
-      <div className="mx-auto max-w-2xl">
-        <div className="flex flex-wrap items-center justify-between gap-3"><Link to="/" className="text-sm text-primary">← Back to jobs</Link><AccountActions /></div>
-        <h1 className="mt-4 font-display text-4xl font-extrabold">Post a quick task</h1>
-        <p className="mt-2 text-muted-foreground">One problem, one fix — something that takes an hour or a day. Say where it is and what you'll pay.</p>
-
-        <form onSubmit={onSubmit} className="mt-8 space-y-5 rounded-2xl border bg-card p-6">
+    <div className="min-h-screen">
+      <header className="relative overflow-hidden px-6 pb-16 pt-6 text-primary-foreground" style={{ background: "var(--gradient-sea)" }}>
+        <div className="pointer-events-none absolute inset-0" style={{ background: "var(--gradient-sun)" }} />
+        <div className="relative mx-auto max-w-2xl">
+          <div className="flex flex-wrap items-center justify-between gap-3"><Link to="/" className="text-sm font-semibold text-primary-foreground/80 hover:text-primary-foreground">← Back to jobs</Link><AccountActions /></div>
+          <h1 className="mt-8 font-display text-4xl font-extrabold">Post a quick task</h1>
+          <p className="mt-2 opacity-90">One problem, one fix — something that takes an hour or a day. Say where it is and what you'll pay.</p>
+        </div>
+      </header>
+      <div className="mx-auto max-w-2xl px-6 pb-16">
+        <form onSubmit={onSubmit} className="relative z-10 -mt-8 space-y-5 rounded-2xl border bg-card p-6 shadow-[var(--shadow-lift)]">
           <Field label="Job title" error={errors.title}><input name="title" className={field} placeholder="e.g. Repair bamboo fence" /></Field>
           <div className="grid gap-5 md:grid-cols-2">
             <Field label="Trade needed" error={errors.trade}>

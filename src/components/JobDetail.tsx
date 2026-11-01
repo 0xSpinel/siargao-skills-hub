@@ -39,9 +39,9 @@ export function JobDetail({ job, onClose }: { job: Tables<"job_posts"> | null; o
               ? <img src={photo} alt={`Photo for ${job.title}`} className="max-h-96 w-full rounded-lg object-cover" />
               : <div className="h-48 animate-pulse rounded-lg bg-muted" />)}
             <p className="whitespace-pre-line text-sm">{job.description}</p>
-            <div className="flex items-end justify-between border-t pt-4">
-              <div>
-                <div className="text-xs text-muted-foreground">Pay for this task</div>
+            <div className="flex items-end justify-between gap-3 border-t pt-4">
+              <div className="rounded-xl bg-secondary px-3 py-2">
+                <div className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Pay for this task</div>
                 <div className="font-display text-2xl font-extrabold text-primary">{formatPay(job.pay_amount)}</div>
                 <div className="text-xs text-muted-foreground">Posted by {job.poster_name}</div>
               </div>
