@@ -5,7 +5,6 @@ import { MapPin, Phone, Hammer, Plus, Search, Waves, ArrowRight } from "lucide-r
 import { supabase } from "@/integrations/supabase/client";
 import { MUNICIPALITIES, TRADES, formatPay, timeAgo } from "@/lib/jobs";
 import { JobDetail } from "@/components/JobDetail";
-import { AccountActions } from "@/components/AccountActions";
 import { CommunityNav } from "@/components/CommunityNav";
 import { Button } from "@/components/ui/button";
 
