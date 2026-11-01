@@ -86,6 +86,53 @@ export type Database = {
         }
         Relationships: []
       }
+      service_offers: {
+        Row: {
+          barangay: string
+          category: string
+          contact: string
+          created_at: string
+          description: string
+          id: string
+          municipality: string
+          provider_name: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          barangay: string
+          category: string
+          contact: string
+          created_at?: string
+          description: string
+          id?: string
+          municipality: string
+          provider_name: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          barangay?: string
+          category?: string
+          contact?: string
+          created_at?: string
+          description?: string
+          id?: string
+          municipality?: string
+          provider_name?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_offers_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

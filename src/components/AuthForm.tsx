@@ -17,7 +17,11 @@ export function AuthForm({ signup = false }: { signup?: boolean }) {
   const [failure, setFailure] = useState("");
   const [sent, setSent] = useState(false);
   useEffect(() => {
-    if (ready && user) void navigate({ to: "/post", replace: true });
+    if (ready && user) {
+      const to = sessionStorage.getItem("swell-do-return") === "/offer" ? "/offer" : "/post";
+      sessionStorage.removeItem("swell-do-return");
+      void navigate({ to, replace: true });
+    }
   }, [ready, user, navigate]);
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setFailure("");
@@ -67,7 +71,7 @@ export function AuthForm({ signup = false }: { signup?: boolean }) {
       <div className="mt-8 flex h-14 w-14 items-center justify-center rounded-2xl text-primary-foreground shadow-[var(--shadow-card)]" style={{ background: "var(--gradient-sea)" }}>
         <ShieldCheck className="h-7 w-7" />
       </div>
-      <p className="mt-5 font-display text-xl font-bold text-primary">Hanap-Trabaho · Siargao</p>
+      <p className="mt-5 font-display text-xl font-bold text-primary">swell do</p>
       <h1 className="mt-2 font-display text-4xl font-bold">{sent ? "Check your email" : signup ? "Join the community" : "Welcome back"}</h1>
       <p className="mt-3 text-muted-foreground">{sent ? "Open the confirmation link we sent to activate your account. Then log in to post a task." : signup ? "A name, a confirmed email, and a place in the island community." : "Log in to post your next quick task."}</p>
       {sent ? <Button asChild className="mt-6"><Link to="/auth"><Mail /> Go to login</Link></Button> : <>

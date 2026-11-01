@@ -21,7 +21,7 @@ export function AccountActions() {
     await navigate({ to: "/auth", replace: true });
   }
   return <div className="flex flex-wrap items-center gap-2">
-    {ready && user ? <><span className="max-w-32 truncate text-sm">{user.user_metadata['display_name'] || user.user_metadata['full_name'] || "Account"}</span><Button variant="secondary" size="sm" disabled={busy} onClick={signOut}><LogOut /> Sign out</Button></> : <Button asChild variant="secondary" size="sm"><Link to="/auth"><LogIn /> Log in</Link></Button>}
+    {ready && user ? <><span className="max-w-32 truncate text-sm">{user.user_metadata?.['display_name'] || user.user_metadata?.['full_name'] || "Account"}</span><Button variant="secondary" size="sm" disabled={busy} onClick={signOut}><LogOut /> Sign out</Button></> : <Button asChild variant="secondary" size="sm"><Link to="/auth"><LogIn /> Log in</Link></Button>}
     {error && <span role="alert" className="text-sm">{error}</span>}
   </div>;
 }

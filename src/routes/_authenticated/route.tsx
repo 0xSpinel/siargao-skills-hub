@@ -4,9 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
-  beforeLoad: async () => {
+  beforeLoad: async ({ location }) => {
     const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) throw redirect({ to: "/auth" });
+    if (error || !data.user) {
+      sessionStorage.setItem("swell-do-return", location.pathname === "/offer" ? "/offer" : "/post");
+      throw redirect({ to: "/auth" });
+    }
   },
   component: Outlet,
 });

@@ -12,3 +12,4 @@
 - Job posts live in public.job_posts; browsing is public, while posting requires an authenticated owner and valid profile — prevents anonymous posting while preserving community access.
 - Account validation is shared by the account forms and mirrored in database profile validation; passwords are never scored as nonsense — protects signup without weakening secure passwords.
 - A single root AccountProvider owns session transitions; protected posting lives under the integration-managed authenticated layout — keeps navigation and sign-out consistent.
+- Service offers live separately in public.service_offers with public browsing and profile-validated owner writes; directory and offering pages reuse the community navigation — keeps offers distinct from task requests and prevents anonymous posting.

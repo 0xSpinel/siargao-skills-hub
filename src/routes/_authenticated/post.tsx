@@ -12,9 +12,9 @@ import { AccountActions } from "@/components/AccountActions";
 export const Route = createFileRoute("/_authenticated/post")({
   head: () => ({
     meta: [
-      { title: "Post a job — Siargao Hanap-Trabaho" },
+      { title: "Post a task — swell do" },
       { name: "description", content: "Post a quick task for local Siargao tradespeople with barangay, pay and details." },
-      { property: "og:title", content: "Post a job — Siargao Hanap-Trabaho" },
+      { property: "og:title", content: "Post a task — swell do" },
       { property: "og:description", content: "Reach local carpenters, painters, mechanics and electricians in Siargao." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -116,7 +116,7 @@ function PostJob() {
             <input type="file" accept="image/*" onChange={(e) => setPhoto(e.target.files?.[0] ?? null)} className={field} />
           </Field>
           <div className="grid gap-5 md:grid-cols-2">
-            <Field label="Your name" error={errors.poster_name}><input name="poster_name" maxLength={80} defaultValue={user?.user_metadata['display_name'] || user?.user_metadata['full_name'] || ""} className={field} /></Field>
+            <Field label="Your name" error={errors.poster_name}><input name="poster_name" maxLength={80} defaultValue={user?.user_metadata?.['display_name'] || user?.user_metadata?.['full_name'] || ""} className={field} /></Field>
             <Field label="Phone or email" error={errors.contact}><input name="contact" className={field} /></Field>
           </div>
           {failure && <p className="text-sm text-destructive">{failure}</p>}
