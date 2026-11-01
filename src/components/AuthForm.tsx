@@ -64,12 +64,14 @@ export function AuthForm({ signup = false }: { signup?: boolean }) {
   return <main className="min-h-screen px-6 py-8 sm:py-12">
     <div className="mx-auto max-w-md">
       <Button asChild variant="link" className="px-0"><Link to="/"><ArrowLeft /> Back to tasks</Link></Button>
-      <p className="mt-8 font-display text-xl font-bold text-primary">Hanap-Trabaho · Siargao</p>
-      <ShieldCheck className="mt-8 h-9 w-9 text-primary" />
-      <h1 className="mt-4 font-display text-4xl font-bold">{sent ? "Check your email" : signup ? "Join the community" : "Welcome back"}</h1>
+      <div className="mt-8 flex h-14 w-14 items-center justify-center rounded-2xl text-primary-foreground shadow-[var(--shadow-card)]" style={{ background: "var(--gradient-sea)" }}>
+        <ShieldCheck className="h-7 w-7" />
+      </div>
+      <p className="mt-5 font-display text-xl font-bold text-primary">Hanap-Trabaho · Siargao</p>
+      <h1 className="mt-2 font-display text-4xl font-bold">{sent ? "Check your email" : signup ? "Join the community" : "Welcome back"}</h1>
       <p className="mt-3 text-muted-foreground">{sent ? "Open the confirmation link we sent to activate your account. Then log in to post a task." : signup ? "A name, a confirmed email, and a place in the island community." : "Log in to post your next quick task."}</p>
       {sent ? <Button asChild className="mt-6"><Link to="/auth"><Mail /> Go to login</Link></Button> : <>
-        <form onSubmit={submit} noValidate className="mt-7 space-y-5">
+        <form onSubmit={submit} noValidate className="mt-7 space-y-5 rounded-2xl border bg-card p-6 shadow-[var(--shadow-card)]">
           {signup && <label className="block text-sm font-semibold">Display name<input name="display_name" autoComplete="name" maxLength={80} className={`${field} mt-2`} placeholder="e.g. Jr Escosura" aria-invalid={!!errors['display_name']} aria-describedby={errors['display_name'] ? "display_name-error" : undefined} />{error("display_name")}</label>}
           <label className="block text-sm font-semibold">Email<input name="email" type="email" autoComplete="email" maxLength={254} className={`${field} mt-2`} placeholder="you@example.com" aria-invalid={!!errors['email']} aria-describedby={errors['email'] ? "email-error" : undefined} />{error("email")}</label>
           <label className="block text-sm font-semibold">Password<div className="relative mt-2"><input name="password" type={visible ? "text" : "password"} autoComplete={signup ? "new-password" : "current-password"} maxLength={128} className={`${field} pr-12`} aria-invalid={!!errors['password']} /><Button type="button" variant="ghost" size="icon" className="absolute right-1 top-1" aria-label={visible ? "Hide password" : "Show password"} title={visible ? "Hide password" : "Show password"} onClick={() => setVisible(!visible)}>{visible ? <EyeOff /> : <Eye />}</Button></div>{error("password")}</label>
