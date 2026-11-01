@@ -116,7 +116,7 @@ function PostJob() {
             <input type="file" accept="image/*" onChange={(e) => setPhoto(e.target.files?.[0] ?? null)} className={field} />
           </Field>
           <div className="grid gap-5 md:grid-cols-2">
-            <Field label="Your name" error={errors.poster_name}><input name="poster_name" maxLength={80} defaultValue={user?.user_metadata['display_name'] || user?.user_metadata['full_name'] || ""} className={field} /></Field>
+            <Field label="Your name" error={errors.poster_name}><input name="poster_name" maxLength={80} defaultValue={user?.user_metadata?.['display_name'] || user?.user_metadata?.['full_name'] || ""} className={field} /></Field>
             <Field label="Phone or email" error={errors.contact}><input name="contact" className={field} /></Field>
           </div>
           {failure && <p className="text-sm text-destructive">{failure}</p>}
