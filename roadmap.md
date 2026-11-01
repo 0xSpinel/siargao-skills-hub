@@ -1,3 +1,6 @@
+- [ ] Rename the website to swell do across pages.
+- [ ] Add public service browsing and signed-in service offering.
+- [ ] Verify service browsing, posting safeguards, and saved offers.
 - [x] Add account pages with display-name and email validation.
 - [x] Require signed-in posting with protected database writes and profile creation.
 - [x] Verify sign-up errors and signed-out posting restriction on desktop and mobile.
