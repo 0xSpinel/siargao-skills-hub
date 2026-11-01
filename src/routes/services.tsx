@@ -49,6 +49,7 @@ function Services() {
     <header className="border-b bg-card px-6 py-6"><div className="mx-auto max-w-5xl"><CommunityNav /></div></header>
     <section className="relative isolate overflow-hidden bg-primary text-primary-foreground">
       <img src={servicesPhoto} width={1536} height={768} alt="A local electrician working on an electrical panel" className="absolute inset-0 -z-10 h-full w-full object-cover object-right" />
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-foreground/50 sm:hidden" />
       <div className="mx-auto max-w-5xl px-6 py-14 sm:py-20">
         <p className="text-sm font-bold">SIARGAO · LOCAL TALENT</p>
         <h1 className="mt-4 max-w-sm font-display text-4xl font-extrabold sm:text-5xl">Skills worth sharing.</h1>
