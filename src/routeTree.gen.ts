@@ -12,7 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ServicesRouteImport } from './routes/services'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as AuthenticatedOfferRouteImport } from './routes/_authenticated/offer'
 import { Route as AuthenticatedPostRouteImport } from './routes/_authenticated/post'
 
 const IndexRoute = IndexRouteImport.update({
@@ -29,10 +31,20 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServicesRoute = ServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedOfferRoute = AuthenticatedOfferRouteImport.update({
+  id: '/offer',
+  path: '/offer',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedPostRoute = AuthenticatedPostRouteImport.update({
   id: '/post',
@@ -43,13 +55,17 @@ const AuthenticatedPostRoute = AuthenticatedPostRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/services': typeof ServicesRoute
   '/signup': typeof SignupRoute
+  '/offer': typeof AuthenticatedOfferRoute
   '/post': typeof AuthenticatedPostRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/services': typeof ServicesRoute
   '/signup': typeof SignupRoute
+  '/offer': typeof AuthenticatedOfferRoute
   '/post': typeof AuthenticatedPostRoute
 }
 export interface FileRoutesById {
@@ -57,20 +73,24 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/services': typeof ServicesRoute
   '/signup': typeof SignupRoute
+  '/_authenticated/offer': typeof AuthenticatedOfferRoute
   '/_authenticated/post': typeof AuthenticatedPostRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/signup' | '/post'
+  fullPaths: '/' | '/auth' | '/services' | '/signup' | '/offer' | '/post'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/signup' | '/post'
+  to: '/' | '/auth' | '/services' | '/signup' | '/offer' | '/post'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/services'
     | '/signup'
+    | '/_authenticated/offer'
     | '/_authenticated/post'
   fileRoutesById: FileRoutesById
 }
@@ -78,6 +98,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ServicesRoute: typeof ServicesRoute
   SignupRoute: typeof SignupRoute
 }
 
@@ -104,12 +125,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/services': {
+      id: '/services'
+      path: '/services'
+      fullPath: '/services'
+      preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/offer': {
+      id: '/_authenticated/offer'
+      path: '/offer'
+      fullPath: '/offer'
+      preLoaderRoute: typeof AuthenticatedOfferRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/post': {
       id: '/_authenticated/post'
@@ -122,10 +157,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedOfferRoute: typeof AuthenticatedOfferRoute
   AuthenticatedPostRoute: typeof AuthenticatedPostRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedOfferRoute: AuthenticatedOfferRoute,
   AuthenticatedPostRoute: AuthenticatedPostRoute,
 }
 
@@ -136,6 +173,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  ServicesRoute: ServicesRoute,
   SignupRoute: SignupRoute,
 }
 export const routeTree = rootRouteImport

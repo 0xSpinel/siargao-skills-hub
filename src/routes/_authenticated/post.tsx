@@ -12,9 +12,9 @@ import { AccountActions } from "@/components/AccountActions";
 export const Route = createFileRoute("/_authenticated/post")({
   head: () => ({
     meta: [
-      { title: "Post a job — Siargao Hanap-Trabaho" },
+      { title: "Post a task — swell do" },
       { name: "description", content: "Post a quick task for local Siargao tradespeople with barangay, pay and details." },
-      { property: "og:title", content: "Post a job — Siargao Hanap-Trabaho" },
+      { property: "og:title", content: "Post a task — swell do" },
       { property: "og:description", content: "Reach local carpenters, painters, mechanics and electricians in Siargao." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

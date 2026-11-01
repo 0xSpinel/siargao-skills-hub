@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { MUNICIPALITIES, TRADES, formatPay, timeAgo } from "@/lib/jobs";
 import { JobDetail } from "@/components/JobDetail";
 import { AccountActions } from "@/components/AccountActions";
+import { CommunityNav } from "@/components/CommunityNav";
 import { Button } from "@/components/ui/button";
 
 const jobsQuery = queryOptions({
@@ -21,9 +22,9 @@ const jobsQuery = queryOptions({
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Siargao Hanap-Trabaho — Local jobs for island talent" },
+      { title: "swell do — Quick tasks in Siargao" },
       { name: "description", content: "Find or post work for carpenters, painters, mechanics and electricians across Siargao's barangays." },
-      { property: "og:title", content: "Siargao Hanap-Trabaho" },
+      { property: "og:title", content: "swell do — Quick tasks in Siargao" },
       { property: "og:description", content: "A community job board connecting Siargao hirers with local tradespeople." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -56,14 +57,7 @@ function Index() {
       <header className="relative overflow-hidden px-6 pb-28 pt-8 text-primary-foreground" style={{ background: "var(--gradient-sea)" }}>
         <div className="pointer-events-none absolute inset-0" style={{ background: "var(--gradient-sun)" }} />
         <div className="relative mx-auto max-w-5xl">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <span className="flex items-center gap-2 font-display text-xl font-extrabold">
-              <Waves className="h-5 w-5" /> Hanap-Trabaho · Siargao
-            </span>
-            <div className="flex flex-wrap items-center gap-3"><AccountActions /><Button asChild className="bg-accent text-accent-foreground shadow-[var(--shadow-card)] hover:bg-accent/90"><Link to="/post">
-              <Plus className="h-4 w-4" /> Post a job
-            </Link></Button></div>
-          </div>
+          <CommunityNav />
           <span className="mt-14 inline-flex items-center gap-2 rounded-full border border-primary-foreground/25 bg-primary-foreground/10 px-4 py-1.5 text-xs font-bold tracking-wide backdrop-blur-sm">
             Community board · One-off tasks · Fair pay
           </span>
@@ -73,6 +67,7 @@ function Index() {
           <p className="mt-4 max-w-xl text-lg opacity-90">
             Got a quick fix — an hour or a day's work? Post it, name your price, and a local carpenter, painter, mechanic or electrician nearby can take it.
           </p>
+          <div className="mt-6 flex flex-wrap gap-3"><Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90"><Link to="/post"><Plus /> Post a task</Link></Button><Button asChild variant="outline" className="border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10"><Link to="/services">Find local services <ArrowRight /></Link></Button></div>
           <div className="mt-8 flex flex-wrap gap-6 text-sm">
             <span><strong className="font-display text-2xl font-extrabold">{jobs.length}</strong> open task{jobs.length !== 1 && "s"}</span>
             <span><strong className="font-display text-2xl font-extrabold">{towns}</strong> municipalities</span>
@@ -142,7 +137,7 @@ function Index() {
       </main>
 
       <footer className="border-t bg-card px-6 py-12 text-center">
-        <p className="flex items-center justify-center gap-2 font-display text-lg font-extrabold"><Waves className="h-5 w-5 text-primary" /> Hanap-Trabaho · Siargao</p>
+        <p className="flex items-center justify-center gap-2 font-display text-lg font-extrabold"><Waves className="h-5 w-5 text-primary" /> swell do</p>
         <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
           A community board for quick fixes and fair pay — connecting Siargao hirers with local tradespeople, one task at a time.
         </p>
