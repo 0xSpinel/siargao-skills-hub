@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useState, type FormEvent } from "react";
 import { ArrowLeft, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { isDemo, DEMO_BLOCKED } from "@/lib/demo";
 import { useAccount } from "@/components/AccountProvider";
 import { CommunityNav } from "@/components/CommunityNav";
 import { Button } from "@/components/ui/button";
@@ -32,7 +33,9 @@ function OfferService() {
     event.preventDefault(); setFailure("");
     const parsed = serviceSchema.safeParse(Object.fromEntries(new FormData(event.currentTarget)));
     if (!parsed.success) { const next: Record<string, string> = {}; parsed.error.issues.forEach((issue) => { next[String(issue.path[0])] ??= issue.message; }); setErrors(next); return; }
-    setErrors({}); setBusy(true);
+    setErrors({});
+    if (isDemo()) { setFailure(DEMO_BLOCKED); return; }
+    setBusy(true);
     try {
       const { data: verified, error: authError } = await supabase.auth.getUser();
       if (authError || !verified.user) { setFailure("Please log in before offering your services."); return; }
