@@ -3,15 +3,23 @@ import type { User } from "@supabase/supabase-js";
 import { useRouter } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { DEMO_USER, isDemo } from "@/lib/demo";
 
-const AccountContext = createContext<{ user: User | null; ready: boolean }>({ user: null, ready: false });
+const AccountContext = createContext<{ user: User | null; ready: boolean; demo: boolean }>({ user: null, ready: false, demo: false });
 export const useAccount = () => useContext(AccountContext);
 
 export function AccountProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [ready, setReady] = useState(false);
+  const [demo, setDemo] = useState(false);
   const router = useRouter();
   const qc = useQueryClient();
+  useEffect(() => {
+    const sync = () => { setDemo(isDemo()); void router.invalidate(); };
+    sync();
+    window.addEventListener("swell-demo", sync);
+    return () => window.removeEventListener("swell-demo", sync);
+  }, [router]);
   useEffect(() => {
     let active = true;
     let transition = false;
@@ -24,8 +32,9 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     });
     void supabase.auth.getUser().then(({ data }) => {
       if (active && !transition) { setUser(data.user); setReady(true); }
-    });
+    }).catch(() => { if (active) setReady(true); });
     return () => { active = false; subscription.unsubscribe(); };
   }, [router, qc]);
-  return <AccountContext.Provider value={{ user, ready }}>{children}</AccountContext.Provider>;
+  const current = user ?? (demo ? DEMO_USER : null);
+  return <AccountContext.Provider value={{ user: current, ready: ready || demo, demo: demo && !user }}>{children}</AccountContext.Provider>;
 }

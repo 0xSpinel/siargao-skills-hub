@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { IslandMap } from "./IslandMap";
 
 declare global {
   interface Window { __gmapsReady?: () => void; google?: any }
@@ -24,7 +25,8 @@ function loadMaps(): Promise<void> {
 
 type LatLng = { lat: number; lng: number };
 
-export function JobMap({ position, onPick, className }: {
+export function JobMap({ position, onPick, className, municipality }: {
+  municipality?: string | undefined;
   position: LatLng | null;
   onPick?: (p: LatLng) => void;
   className?: string;
@@ -36,7 +38,11 @@ export function JobMap({ position, onPick, className }: {
   pickRef.current = onPick;
   const [failed, setFailed] = useState(false);
 
+  const [offline, setOffline] = useState(false);
+  useEffect(() => { if (!navigator.onLine) setOffline(true); }, []);
+
   useEffect(() => {
+    if (offline) return;
     let alive = true;
     loadMaps().then(() => {
       if (!alive || !el.current) return;
@@ -50,14 +56,15 @@ export function JobMap({ position, onPick, className }: {
         pickRef.current?.({ lat: e.latLng.lat(), lng: e.latLng.lng() });
       });
     }).catch(() => alive && setFailed(true));
-    return () => { alive = false; };
+    return () => { alive = false; marker.current = null; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [offline]);
 
   useEffect(() => {
     if (marker.current) marker.current.setPosition(position ?? null);
   }, [position]);
 
-  if (failed) return <div className={`${className} grid place-items-center bg-muted text-sm text-muted-foreground`}>Map unavailable</div>;
-  return <div ref={el} className={className} />;
+  const toggle = <button type="button" onClick={() => { setFailed(false); setOffline(!offline); }} className="absolute right-2 bottom-2 z-10 rounded bg-card px-2 py-1 text-xs font-semibold shadow">{offline || failed ? "Try Google map" : "Offline map"}</button>;
+  if (offline || failed) return <div className="relative"><IslandMap position={position} onPick={onPick} highlight={municipality} className={className} />{!failed && toggle}</div>;
+  return <div className="relative"><div ref={el} className={className} />{toggle}</div>;
 }

@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import "@lovable.dev/cloud-auth-js/styles.css";
 import { useAccount } from "@/components/AccountProvider";
+import { DEMO_EMAIL, DEMO_PASSWORD, startDemo } from "@/lib/demo";
 import { loginSchema, signUpSchema } from "@/lib/account-validation";
 
 export function AuthForm({ signup = false }: { signup?: boolean }) {
@@ -32,7 +33,9 @@ export function AuthForm({ signup = false }: { signup?: boolean }) {
       for (const issue of parsed.error.issues) next[String(issue.path[0])] ??= issue.message;
       setErrors(next); return;
     }
-    setErrors({}); setBusy(true);
+    setErrors({});
+    if (!signup && String(values["email"]).toLowerCase() === DEMO_EMAIL && values["password"] === DEMO_PASSWORD) { startDemo(); return; }
+    setBusy(true);
     try {
       if (signup) {
         const data = signUpSchema.parse(values);
@@ -84,7 +87,7 @@ export function AuthForm({ signup = false }: { signup?: boolean }) {
           <Button disabled={busy} className="h-12 w-full" type="submit">{busy ? "Please wait…" : signup ? "Create account" : "Log in"}</Button>
         </form>
         <div className="my-6 flex items-center gap-3 text-xs text-muted-foreground"><span className="h-px flex-1 bg-border" />or<span className="h-px flex-1 bg-border" /></div>
-        <div className="space-y-3"><Button variant="outline" className="h-11 w-full" disabled={busy} onClick={() => social("google")}>Continue with Google</Button><Button className="lovable-auth-button w-full" disabled={busy} onClick={() => social("lovable")}>Continue with Lovable</Button></div>
+        <div className="space-y-3"><Button variant="outline" className="h-11 w-full" disabled={busy} onClick={() => social("google")}>Continue with Google</Button><Button className="lovable-auth-button w-full" disabled={busy} onClick={() => social("lovable")}>Continue with Lovable</Button><Button variant="secondary" className="h-11 w-full" onClick={startDemo}>Try the demo (works offline)</Button><p className="text-center text-xs text-muted-foreground">Demo login: {DEMO_EMAIL} / {DEMO_PASSWORD} — browse and try forms; nothing is published.</p></div>
         <p className="mt-6 text-center text-sm">{signup ? "Already have an account? " : "New to the community? "}<Link to={signup ? "/auth" : "/signup"} className="font-bold text-primary underline">{signup ? "Log in" : "Sign up"}</Link></p>
       </>}
     </div>

@@ -13,3 +13,5 @@
 - Account validation is shared by the account forms and mirrored in database profile validation; passwords are never scored as nonsense — protects signup without weakening secure passwords.
 - A single root AccountProvider owns session transitions; protected posting lives under the integration-managed authenticated layout — keeps navigation and sign-out consistent.
 - Service offers live separately in public.service_offers with public browsing and profile-validated owner writes; directory and offering pages reuse the community navigation — keeps offers distinct from task requests and prevents anonymous posting.
+- Demo mode is a browser-only session (no server account); it may view protected forms but every publish path must block it — offline testing without letting anonymous users write data.
+- Maps fall back to a bundled vector island map when offline or when Google Maps fails — the app stays usable without signal.

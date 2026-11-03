@@ -32,7 +32,7 @@ export function JobDetail({ job, onClose }: { job: Tables<"job_posts"> | null; o
               <MapPin className="h-4 w-4" /> Brgy. {job.barangay}, {job.municipality}
             </DialogDescription>
             <ClientOnly fallback={<div className="h-64 rounded-lg bg-muted" />}>
-              <JobMap key={job.id} position={pos} className="h-64 w-full overflow-hidden rounded-lg border" />
+              <JobMap key={job.id} position={pos} municipality={job.municipality} className="h-64 w-full overflow-hidden rounded-lg border" />
             </ClientOnly>
             {!pos && <p className="text-xs text-muted-foreground">The hirer didn't pin an exact spot — ask them for directions.</p>}
             {job.photo_url && (photo

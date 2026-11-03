@@ -5,6 +5,7 @@ import { useState, type FormEvent, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { jobSchema, type JobInput, MUNICIPALITIES, TRADES } from "@/lib/jobs";
 import { displayNameSchema } from "@/lib/account-validation";
+import { isDemo, DEMO_BLOCKED } from "@/lib/demo";
 import { useAccount } from "@/components/AccountProvider";
 import { Button } from "@/components/ui/button";
 import { AccountActions } from "@/components/AccountActions";
@@ -54,6 +55,7 @@ function PostJob() {
       setErrors(errs);
       return;
     }
+    if (isDemo()) { setErrors({}); setFailure(DEMO_BLOCKED); return; }
     setErrors({}); setBusy(true); setFailure("");
     const { data: verified, error: authError } = await supabase.auth.getUser();
     if (authError || !verified.user) { setBusy(false); setFailure("Please log in before posting."); return; }

@@ -5,15 +5,17 @@ import { Button } from "@/components/ui/button";
 import { useAccount } from "@/components/AccountProvider";
 import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
+import { endDemo } from "@/lib/demo";
 
 export function AccountActions() {
-  const { user, ready } = useAccount();
+  const { user, ready, demo } = useAccount();
   const qc = useQueryClient();
   const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   async function signOut() {
     setBusy(true); setError("");
+    if (demo) { endDemo(); setBusy(false); await navigate({ to: "/auth", replace: true }); return; }
     await qc.cancelQueries(); qc.clear();
     const { error } = await supabase.auth.signOut();
     setBusy(false);
