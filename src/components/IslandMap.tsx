@@ -27,7 +27,7 @@ export const PLACES: { name: string; lat: number; lng: number }[] = [
 ];
 
 export function IslandMap({ position, onPick, highlight, className }: {
-  position: LatLng | null; onPick?: (p: LatLng) => void; highlight?: string; className?: string;
+  position: LatLng | null; onPick?: ((p: LatLng) => void) | undefined; highlight?: string | undefined; className?: string | undefined;
 }) {
   const svg = useRef<SVGSVGElement>(null);
   const [zoomed, setZoomed] = useState(true);

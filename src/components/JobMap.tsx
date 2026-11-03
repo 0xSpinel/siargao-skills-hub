@@ -26,7 +26,7 @@ function loadMaps(): Promise<void> {
 type LatLng = { lat: number; lng: number };
 
 export function JobMap({ position, onPick, className, municipality }: {
-  municipality?: string;
+  municipality?: string | undefined;
   position: LatLng | null;
   onPick?: (p: LatLng) => void;
   className?: string;
