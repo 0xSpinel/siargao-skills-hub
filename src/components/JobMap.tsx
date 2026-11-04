@@ -46,7 +46,6 @@ export function JobMap({ position, onPick, className, municipality }: {
   const [failed, setFailed] = useState(false);
 
   const [offline, setOffline] = useState(false);
-  useEffect(() => { if (offline) setFailed(false); }, [offline]);
   useEffect(() => {
     if (!navigator.onLine || authFailed) { setFailed(true); return; }
     const onFail = () => setFailed(true);
@@ -77,7 +76,7 @@ export function JobMap({ position, onPick, className, municipality }: {
     if (marker.current) marker.current.setPosition(position ?? null);
   }, [position]);
 
-  const toggle = <button type="button" onClick={() => { setFailed(false); setOffline(!offline); }} className="absolute right-2 bottom-2 z-10 rounded bg-card px-2 py-1 text-xs font-semibold shadow">{offline || failed ? "Try Google map" : "Offline map"}</button>;
+  const toggle = <button type="button" onClick={() => { if (offline || failed) { setFailed(false); setOffline(false); } else setOffline(true); }} className="absolute right-2 bottom-2 z-10 rounded bg-card px-2 py-1 text-xs font-semibold shadow">{offline || failed ? "Try Google map" : "Offline map"}</button>;
   if (offline || failed) return <div className="relative"><IslandMap position={position} onPick={onPick} highlight={municipality} className={className} />{!authFailed && toggle}</div>;
   return <div className="relative"><div ref={el} className={className} />{toggle}</div>;
 }
