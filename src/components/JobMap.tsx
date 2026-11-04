@@ -7,6 +7,13 @@ declare global {
 
 export const SIARGAO_CENTER = { lat: 9.85, lng: 126.05 };
 
+// Google calls window.gm_authFailure on key/referrer errors instead of rejecting.
+let authFailed = false;
+const authListeners = new Set<() => void>();
+if (typeof window !== "undefined") {
+  (window as any).gm_authFailure = () => { authFailed = true; authListeners.forEach((f) => f()); };
+}
+
 let loader: Promise<void> | null = null;
 function loadMaps(): Promise<void> {
   if (window.google?.maps?.Map) return Promise.resolve();
@@ -39,10 +46,16 @@ export function JobMap({ position, onPick, className, municipality }: {
   const [failed, setFailed] = useState(false);
 
   const [offline, setOffline] = useState(false);
-  useEffect(() => { if (!navigator.onLine) setOffline(true); }, []);
+  useEffect(() => { if (offline) setFailed(false); }, [offline]);
+  useEffect(() => {
+    if (!navigator.onLine || authFailed) { setFailed(true); return; }
+    const onFail = () => setFailed(true);
+    authListeners.add(onFail);
+    return () => { authListeners.delete(onFail); };
+  }, []);
 
   useEffect(() => {
-    if (offline) return;
+    if (offline || failed) return;
     let alive = true;
     loadMaps().then(() => {
       if (!alive || !el.current) return;
@@ -58,13 +71,13 @@ export function JobMap({ position, onPick, className, municipality }: {
     }).catch(() => alive && setFailed(true));
     return () => { alive = false; marker.current = null; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [offline]);
+  }, [offline, failed]);
 
   useEffect(() => {
     if (marker.current) marker.current.setPosition(position ?? null);
   }, [position]);
 
   const toggle = <button type="button" onClick={() => { setFailed(false); setOffline(!offline); }} className="absolute right-2 bottom-2 z-10 rounded bg-card px-2 py-1 text-xs font-semibold shadow">{offline || failed ? "Try Google map" : "Offline map"}</button>;
-  if (offline || failed) return <div className="relative"><IslandMap position={position} onPick={onPick} highlight={municipality} className={className} />{!failed && toggle}</div>;
+  if (offline || failed) return <div className="relative"><IslandMap position={position} onPick={onPick} highlight={municipality} className={className} />{!authFailed && toggle}</div>;
   return <div className="relative"><div ref={el} className={className} />{toggle}</div>;
 }
