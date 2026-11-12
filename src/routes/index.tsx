@@ -13,7 +13,8 @@ const jobsQuery = queryOptions({
   queryFn: async () => {
     const { data, error } = await supabase
       .from("job_posts").select("*").order("created_at", { ascending: false }).limit(200);
-    if (error) throw error;
+    // Database unreachable (paused/offline): show an empty list instead of crashing the page.
+    if (error) { console.warn("Couldn't load list", error.message); return []; }
     return data;
   },
 });
